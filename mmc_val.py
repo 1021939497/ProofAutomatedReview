@@ -8,12 +8,12 @@ from openpyxl import load_workbook
 import warnings
 warnings.filterwarnings("ignore")
 
-apikey = 'XU6BSWEF8I'
+apikey = 'xxxx'
 TextGeneration.set_api_key(apikey, base_url="https://whale-wave.alibaba-inc.com")
 
 
 client = OpenAI(
-    api_key='sk-144c84438e224beb96b9c10dd9841257',
+    api_key='xxxx',
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
@@ -204,33 +204,8 @@ def llm_chat_mmc(cate_name,sku,itemBuyAmount=1,itemTitle=''):
                     # '商品品类：“甜瓜”，规格信息：“重量:4.5-5斤”,购买件数：“1”'
                     # '只有总重量且没有任何单果信息则认为只含一件，1*购买件数=购买件数'
                     
-                    
-                    
-                    # f'如果规格信息中只有总重且没有任何单果信息，则需根据商品标题 {itemTitle} 分析实际品类，并按以下规则处理：'
-                    # '第一步 : 确认商品的实际品类及其具体品种。'
-                    # '如果商品标题中包含具体的品种名称（如“麒麟西瓜”、“冰糖子西瓜”），则需根据品种进一步判断其果径大小。'
-                    # '如果商品标题中未明确品种，则默认按照品类的一般特性处理。'
-                    # '第二步 : 判断该具体商品品种是否属于超大果径品类。'
-                    # '1. 超大果径品类 包括但不限于：西瓜、榴莲、菠萝蜜、南瓜等。'
-                    # '对于超大果径品类（如麒麟西瓜、榴莲、菠萝蜜等），无论总重量多少，均认为单件内只含一件，总件数 = 1 * 购买件数。'
-                    # '2. 中小果径品类 包括但不限于：苹果、土豆、甜瓜、冰糖子西瓜等。'
-                    # '对于中小果径品类（如苹果、土豆、甜瓜等），统一认为是中果，并按照“四. 总斤数和大中小果的情况”计算总件数。'
-                    # 
-                    # '示例：'
-                    # "商品品类：“香蕉”，规格信息：“水果总重:整箱5-6斤”，购买件数：“2件”"
-                    # 'Step 1: 规格信息中没有任何单果信息，确认属于“五. 其他情况”。'
-                    # 'Step 2: 因为命中了“五. 其他情况”，因此参考商品标题：“云南香蕉5斤精选装当季水果青皮蕉自行催熟鲜嫩越甜整箱包邮发货”属于小果径商品品类。'
-                    # 'Step 3: 确认是小果径商品，因此按照“四. 总斤数和大中小果的情况”，以中果规格来计算总件数。'
-                    # 
-                    # '示例：'
-                    # '商品品类：“菠萝蜜”，规格信息：“重量:0斤;单果重量:25-30斤【严选山地老树果爆甜】”，购买件数：“1”'
-                    # 'Step 1: 规格信息中没有任何单果信息，确认属于“五. 其他情况”。'
-                    # 'Step 2:  因为命中了“五. 其他情况”，因此参考商品标题：“正宗海南菠萝蜜一整个新鲜水果脆甜当季现摘干苞黄肉整箱包邮”属于大果径商品品类。'
-                    # 'Step 2: 根据商品标题：“正宗海南菠萝蜜一整个新鲜水果脆甜当季现摘干苞黄肉整箱包邮”判断出是超大果径的商品，因此总件数 = 1 * 1 = 1个。'
-                    
                     f'商品品类：“{cate_name}”，规格信息：“{sku}”，购买件数：“{itemBuyAmount}”'
                     '###限制'
-                    # '只有在规格信息中没有任何单果信息命中“五. 其他情况”时才可以使用商品标题信息，命中“包装规格明确”、“总斤数和果径”、“总斤数和单果重”、“总斤数和大中小果”时都禁止使用标题信息。'
                     '仅以json格式返回最终结果，用中文回答'
                     'reason:返回你的分析过程'
                     'branch:规格信息能提取到的情况（包装规格明确、总斤数和果径、总斤数和单果重、总斤数和大中小果、其他情况）'
@@ -247,38 +222,6 @@ def llm_chat_mmc(cate_name,sku,itemBuyAmount=1,itemTitle=''):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return 'Error'
-
-"""
-if __name__ == "__main__":
-    # url = ["https://img.alicdn.com/imgextra/i2/2218399989887/O1CN01dno3ki2MuIwtTbCcn_!!2218399989887-0-refund_platform.jpg", "https://img.alicdn.com/imgextra/i3/2218399989887/O1CN019Q2hCU2MuIwsy9TtP_!!2218399989887-0-refund_platform.jpg"]
-    # cate_name = "生猪肉"
-    # memo = ""
-    # titlesku = "蚕蛹鲜活新鲜金丝蛹 山东特产桑蚕蛹子生茧蝉蛹冷冻 批发价年货,口味:2斤"
-
-    # url = ["https://img.alicdn.com/imgextra/i3/47172280/O1CN011SK3z11SiI5Eq0pJ4_!!47172280-0-xiaomi.jpg","https://img.alicdn.com/imgextra/i1/47172280/O1CN01G18jz61SiI5GZUDNF_!!47172280-0-xiaomi.jpg"]
-    #
-    # memo = "凹进去了"
-    # cate_name = "厨房/烹饪用具>>烧烤/烘焙用具>>烧烤架炉/烧烤DIY用具>>锡纸/油纸"
-    # title = '空气炸锅专用纸锡纸盘盒烧烤箱烘焙锡箔碗家用硅吸油纸食品级食物'
-    # sku = ''
-
-    url = [
-        "https://picasso-work.alibaba-inc.com/i2/O1CN01jTms7O1lSEtnfQVDq_!!6000000004817-0-tps_intranet-800-800.jpg"
-    ]
-    cate_name = "饮料"
-    itemTitle = '测试品'
-    sku = "测试品sku 10L/罐"
-    itemBuyAmount = 1
-    memo = ""
-
-    # res1 = mllm_chat_mmc(url, memo, cate_name)
-    # res2 = request_whale(url)
-    res3 = llm_chat_mmc(cate_name, sku, itemBuyAmount, itemTitle)
-    # print(res1)
-    # print(res2)
-    print(res3)
-
-#"""
 
 
 if __name__ == "__main__":
